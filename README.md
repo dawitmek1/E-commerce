@@ -24,15 +24,15 @@ A complete online store with product listings, shopping cart, and checkout syste
 
 ## Project Structure
 ecommerce-site/
-├── index.html          # Homepage with featured products
-├── products.html       # Full product catalog
-├── cart.html           # Shopping cart page
-├── checkout.html       # Checkout process
-├── css/
-│   ├── styles.css      # Main styles
-│   └── responsive.css  # Responsive styles
-├── js/
-│   ├── main.js         # Core functionality
-│   ├── cart.js         # Cart management
-│   └── products.js     # Product data and filtering
-└── images/             # Product images and assets
+- ├── index.html          # Homepage with featured products
+- ├── products.html       # Full product catalog
+- ├── cart.html           # Shopping cart page
+- ├── checkout.html       # Checkout process
+- ├── css/
+- │   ├── styles.css      # Main styles
+- │   └── responsive.css  # Responsive styles
+- ├── js/
+- │   ├── main.js         # Core functionality
+- │   ├── cart.js         # Cart management
+- │   └── products.js     # Product data and filtering
+- └── images/             # Product images and assets
