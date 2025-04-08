@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart | SNEAKHUB</title>
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Cart Page Styles */
+        .cart-header {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                        url('https://images.unsplash.com/photo-1483985988355-763728e1935b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80') no-repeat center/cover;
+            color: white;
+            padding: 5rem 0;
+            text-align: center;
+        }
+        
+        .cart-header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .cart-content {
+            padding: 4rem 0;
+        }
+        
+        .cart-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 3rem;
+        }
+        
+        .cart-items {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .cart-title {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray);
+        }
+        
+        .cart-item {
+            display: grid;
+            grid-template-columns: 100px 1fr 150px;
+            gap: 2rem;
+            padding: 1.5rem 0;
+            border-bottom: 1px solid var(--gray);
+        }
+        
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+        
+        .cart-item-img {
+            width: 100px;
+            height: 100px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .cart-item-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .cart-item-details {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .cart-item-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .cart-item-size {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .cart-item-remove {
+            color: var(--danger);
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            transition: all 0.3s;
+        }
+        
+        .cart-item-remove:hover {
+            color: #b71c1c;
+        }
+        
+        .cart-item-price {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        
+        .item-total {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            background: var(--light);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        
+        .quantity-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .quantity-input {
+            width: 40px;
+            text-align: center;
+            padding: 0.3rem;
+            border: 1px solid var(--gray);
+            border-radius: 6px;
+        }
+        
+        .cart-summary {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            align-self: flex-start;
+            position: sticky;
+            top: 20px;
+        }
+        
+        .summary-title {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray);
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+        }
+        
+        .summary-total {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 1.5rem 0;
+            padding-top: 1rem;
+            border-top: 1px solid var(--gray);
+        }
+        
+        .checkout-btn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .continue-shopping {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 2rem;
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .empty-cart {
+            text-align: center;
+            padding: 4rem 0;
+        }
+        
+        .empty-cart-icon {
+            font-size: 5rem;
+            color: var(--gray);
+            margin-bottom: 2rem;
+        }
+        
+        .empty-cart h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .empty-cart p {
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            color: var(--gray);
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .cart-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .cart-item {
+                grid-template-columns: 80px 1fr;
+                grid-template-rows: auto auto;
+            }
+            
+            .cart-item-price {
+                grid-column: 2;
+                grid-row: 2;
+                align-items: flex-start;
+                margin-top: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">SNEAK<span>HUB</span></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shop.html">Shop</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button id="theme-toggle"><i class="fas fa-moon"></i></button>
+                <a href="profile.html"><i class="fas fa-user"></i></a>
+                <a href="cart.html" class="cart-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count">2</span>
+                </a>
+                <a href="login.html" class="btn btn-outline">Login</a>
+            </div>
+            <button class="menu-toggle"><i class="fas fa-bars"></i></button>
+        </div>
+    </nav>
+
+    <section class="cart-header">
+        <div class="container">
+            <h1>Your Shopping Cart</h1>
+        </div>
+    </section>
+
+    <section class="cart-content">
+        <div class="container">
+            <div class="cart-container">
+                <div class="cart-items">
+                    <h2 class="cart-title">2 Items in Your Cart</h2>
+                    
+                    <div class="cart-item">
+                        <div class="cart-item-img">
+                            <img src="https://images.unsplash.com/photo-1600269452121-4f2416e55c28?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=765&q=80" alt="Nike Air Max 270">
+                        </div>
+                        <div class="cart-item-details">
+                            <h3 class="cart-item-title">Nike Air Max 270</h3>
+                            <div class="cart-item-size">Size: 9</div>
+                            <div class="cart-item-remove">
+                                <i class="fas fa-trash"></i> Remove
+                            </div>
+                        </div>
+                        <div class="cart-item-price">
+                            <div class="item-total">$150.00</div>
+                            <div class="quantity-control">
+                                <button class="quantity-btn minus">-</button>
+                                <input type="number" class="quantity-input" value="1" min="1">
+                                <button class="quantity-btn plus">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="cart-item">
+                        <div class="cart-item-img">
+                            <img src="https://images.unsplash.com/photo-1605348532760-6753d2c43329?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=765&q=80" alt="Adidas Ultraboost 21">
+                        </div>
+                        <div class="cart-item-details">
+                            <h3 class="cart-item-title">Adidas Ultraboost 21</h3>
+                            <div class="cart-item-size">Size: 10</div>
+                            <div class="cart-item-remove">
+                                <i class="fas fa-trash"></i> Remove
+                            </div>
+                        </div>
+                        <div class="cart-item-price">
+                            <div class="item-total">$180.00</div>
+                            <div class="quantity-control">
+                                <button class="quantity-btn minus">-</button>
+                                <input type="number" class="quantity-input" value="1" min="1">
+                                <button class="quantity-btn plus">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <a href="shop.html" class="continue-shopping">
+                        <i class="fas fa-arrow-left"></i> Continue Shopping
+                    </a>
+                </div>
+                
+                <div class="cart-summary">
+                    <h2 class="summary-title">Order Summary</h2>
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span>$330.00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Shipping</span>
+                        <span>Free</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Tax</span>
+                        <span>$26.40</span>
+                    </div>
+                    <div class="summary-total">
+                        <span>Total</span>
+                        <span>$356.40</span>
+                    </div>
+                    <button class="btn btn-primary checkout-btn">Proceed to Checkout</button>
+                    <div class="payment-methods">
+                        <img src="https://cdn.worldvectorlogo.com/logos/visa.svg" alt="Visa" style="height: 30px;">
+                        <img src="https://cdn.worldvectorlogo.com/logos/mastercard.svg" alt="Mastercard" style="height: 30px;">
+                        <img src="https://cdn.worldvectorlogo.com/logos/paypal.svg" alt="PayPal" style="height: 30px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <h3>SNEAKHUB</h3>
+                    <p>Premium footwear for every step of your journey.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="shop.html">Shop</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Customer Service</h3>
+                    <ul>
+                        <li><a href="#">FAQs</a></li>
+                        <li><a href="#">Shipping Policy</a></li>
+                        <li><a href="#">Returns & Refunds</a></li>
+                        <li><a href="#">Size Guide</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Contact Us</h3>
+                    <ul>
+                        <li><i class="fas fa-map-marker-alt"></i> 123 Sneaker Street, Addis Ababa</li>
+                        <li><i class="fas fa-phone"></i> +251 123 456 789</li>
+                        <li><i class="fas fa-envelope"></i> info@sneakhub.com</li>
+                        <li><i class="fas fa-clock"></i> Mon-Fri: 9AM - 6PM</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 <span>Dawit</span>. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Quantity control in cart
+        const minusBtns = document.querySelectorAll('.minus');
+        const plusBtns = document.querySelectorAll('.plus');
+        const quantityInputs = document.querySelectorAll('.quantity-input');
+        
+        minusBtns.forEach((btn, index) => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                let value = parseInt(quantityInputs[index].value);
+                if (value > 1) {
+                    quantityInputs[index].value = value - 1;
+                    updateCartTotal();
+                }
+            });
+        });
+        
+        plusBtns.forEach((btn, index) => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                let value = parseInt(quantityInputs[index].value);
+                quantityInputs[index].value = value + 1;
+                updateCartTotal();
+            });
+        });
+        
+        // Remove item from cart
+        const removeBtns = document.querySelectorAll('.cart-item-remove');
+        removeBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                this.closest('.cart-item').remove();
+                updateCartTotal();
+                updateCartCount();
+            });
+        });
+        
+        // Update cart total
+        function updateCartTotal() {
+            const items = document.querySelectorAll('.cart-item');
+            let subtotal = 0;
+            
+            items.forEach(item => {
+                const price = parseFloat(item.querySelector('.item-total').textContent.replace('$', ''));
+                const quantity = parseInt(item.querySelector('.quantity-input').value);
+                subtotal += price * quantity;
+            });
+            
+            const tax = subtotal * 0.08;
+            const total = subtotal + tax;
+            
+            document.querySelector('.summary-row:nth-child(1) span:last-child').textContent = `$${subtotal.toFixed(2)}`;
+            document.querySelector('.summary-row:nth-child(3) span:last-child').textContent = `$${tax.toFixed(2)}`;
+            document.querySelector('.summary-total span:last-child').textContent = `$${total.toFixed(2)}`;
+        }
+        
+        // Update cart count
+        function updateCartCount() {
+            const items = document.querySelectorAll('.cart-item');
+            document.querySelector('.cart-count').textContent = items.length;
+            document.querySelector('.cart-title').textContent = `${items.length} Items in Your Cart`;
+        }
+        
+        // Theme toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            
+            if (document.body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme', 'dark');
+                this.innerHTML = '<i class="fas fa-sun"></i>';
+            } else {
+                localStorage.setItem('theme', 'light');
+                this.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+        });
+        
+        // Check for saved theme preference
+        if (localStorage.getItem('theme') === 'dark') {
+            document.body.classList.add('dark-mode');
+            themeToggle.innerHTML = '<i class="fas fa-sun"></i>';
+        }
+        
+        // Mobile menu toggle
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        
+        menuToggle.addEventListener('click', function() {
+            navLinks.classList.toggle('active');
+            this.classList.toggle('active');
+        });
+    </script>
+</body>
+</html>
