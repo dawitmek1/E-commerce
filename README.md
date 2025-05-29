@@ -1,6 +1,12 @@
 # URBANCART - E-Commerce Website
 
-![E-Commerce Screenshot](./ecom-screenshot.jpg)
+![E-Commerce Screenshot](screenshots/home.jpg)
+![E-Commerce Screenshot](screenshots/shop.jpg)
+![E-Commerce Screenshot](screenshots/about.jpg)
+![E-Commerce Screenshot](screenshots/contact.jpg)
+![E-Commerce Screenshot](screenshots/cart.jpg)
+![E-Commerce Screenshot](screenshots/profile.jpg)
+![E-Commerce Screenshot](screenshots/login.jpg)
 
 A complete online store with product listings, shopping cart, and checkout system.
 
