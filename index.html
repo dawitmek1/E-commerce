@@ -2,1191 +2,1183 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
-  <title>75 Hard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#07090e" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>75 Hard — Premium Mobile Prototype</title>
   <style>
     :root {
-      --bg: #0a0d14;
-      --bg-2: #0f1420;
-      --panel: rgba(255,255,255,0.04);
-      --panel-2: rgba(255,255,255,0.06);
+      --bg: #07090e;
+      --bg-2: #0d1119;
+      --panel: rgba(18, 23, 34, 0.88);
+      --panel-2: rgba(12, 15, 23, 0.98);
       --line: rgba(255,255,255,0.08);
-      --text: #f4f7ff;
-      --muted: #9aa4bb;
+      --line-2: rgba(255,255,255,0.05);
+      --text: #eef2ff;
+      --muted: #9aa4bf;
+      --soft: #717b96;
       --accent: #8b5cf6;
       --accent-2: #22c55e;
+      --accent-3: #06b6d4;
       --danger: #ef4444;
-      --warning: #f59e0b;
-      --radius: 22px;
-      --nav-h: 74px;
-      --shadow: 0 18px 60px rgba(0,0,0,.35);
+      --warning: #f97316;
+      --shadow: 0 30px 80px rgba(0,0,0,0.45);
+      --radius: 26px;
+      --radius-sm: 18px;
+      --good-bg: rgba(34,197,94,0.12);
+      --bad-bg: rgba(239,68,68,0.12);
+      --tabbar: rgba(10,12,19,0.88);
+      --glow: 0 0 0 1px rgba(255,255,255,0.03), 0 20px 40px rgba(0,0,0,0.35);
     }
 
     body.light {
-      --bg: #f3f5fb;
-      --bg-2: #ffffff;
-      --panel: rgba(15,23,42,0.04);
-      --panel-2: rgba(15,23,42,0.06);
-      --line: rgba(15,23,42,0.08);
+      --bg: #eef2f9;
+      --bg-2: #e3eaf5;
+      --panel: rgba(255,255,255,0.84);
+      --panel-2: rgba(248,250,255,0.96);
+      --line: rgba(20,28,45,0.08);
+      --line-2: rgba(20,28,45,0.05);
       --text: #0f172a;
-      --muted: #64748b;
-      --accent: #6d28d9;
-      --accent-2: #16a34a;
-      --danger: #dc2626;
-      --warning: #d97706;
-      --shadow: 0 18px 50px rgba(15,23,42,.08);
+      --muted: #5f6b84;
+      --soft: #74809a;
+      --tabbar: rgba(255,255,255,0.9);
+      --shadow: 0 28px 70px rgba(28,38,60,0.16);
+      --glow: 0 0 0 1px rgba(255,255,255,0.5), 0 12px 30px rgba(25,35,58,0.08);
     }
 
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-    html, body { margin: 0; min-height: 100%; background: var(--bg); color: var(--text); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    html, body { min-height: 100%; margin: 0; }
     body {
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
       background:
-        radial-gradient(circle at top left, rgba(139,92,246,.16), transparent 28%),
-        radial-gradient(circle at bottom right, rgba(34,197,94,.10), transparent 28%),
+        radial-gradient(circle at top, rgba(139,92,246,0.14), transparent 30%),
+        radial-gradient(circle at bottom right, rgba(6,182,212,0.10), transparent 28%),
         linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
       overflow-x: hidden;
     }
 
-    .app {
-      min-height: 100dvh;
-      width: 100%;
-      max-width: 480px;
-      margin: 0 auto;
-      position: relative;
-      padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 18px);
-    }
-
+    .app { min-height: 100dvh; }
     .screen {
       display: none;
-      padding: calc(18px + env(safe-area-inset-top)) 16px 20px;
-      animation: fade .2s ease;
+      padding: calc(16px + env(safe-area-inset-top, 0px)) 18px calc(106px + env(safe-area-inset-bottom, 0px));
+      animation: enter .22s ease;
     }
     .screen.active { display: block; }
-    @keyframes fade { from { opacity: 0; transform: translateY(8px);} to {opacity: 1; transform: translateY(0);} }
+    @keyframes enter { from { opacity: 0; transform: translateY(8px);} to { opacity: 1; transform: none; } }
 
-    h1,h2,h3,p { margin: 0; }
+    h1, h2, h3, p { margin: 0; }
+    .hero { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; padding: 8px 2px 16px; }
+    .eyebrow { color: var(--muted); text-transform: uppercase; letter-spacing: .16em; font-size: 11px; margin-bottom: 10px; }
+    h1 { font-size: 30px; line-height: 1.02; letter-spacing: -.05em; font-weight: 760; }
+    .hero p { max-width: 230px; margin-top: 10px; color: var(--muted); font-size: 14px; line-height: 1.45; }
 
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-
-    .brand {
-      display: grid;
-      gap: 4px;
-    }
-    .eyebrow {
-      font-size: 11px;
-      letter-spacing: .18em;
-      text-transform: uppercase;
-      color: var(--muted);
-      font-weight: 700;
-    }
-    .title {
-      font-size: 28px;
-      line-height: 1.04;
-      letter-spacing: -.05em;
-      font-weight: 800;
-    }
-    .subtitle {
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.45;
-      margin-top: 10px;
-      max-width: 30ch;
-    }
-
-    .top-actions { display: flex; gap: 10px; }
-
-    .icon-btn, .chip-btn, .nav-btn, button, input, textarea {
-      font: inherit;
-    }
-
-    .icon-btn {
+    .pill, .toggle-pill, .tag, .mini-chip {
+      border-radius: 999px;
+      padding: 10px 14px;
       border: 1px solid var(--line);
-      background: var(--panel);
+      background: rgba(255,255,255,0.05);
       color: var(--text);
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
-      display: grid;
-      place-items: center;
-      cursor: pointer;
+      font-size: 12px;
+      font-weight: 650;
       backdrop-filter: blur(12px);
     }
+    .toggle-pill { cursor:pointer; }
+    .tag, .mini-chip { padding: 8px 10px; font-size: 11px; }
 
     .card {
-      background: linear-gradient(180deg, var(--panel-2), var(--panel));
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
       border: 1px solid var(--line);
       border-radius: var(--radius);
       padding: 16px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(18px);
       margin-bottom: 14px;
+      box-shadow: var(--glow);
+      backdrop-filter: blur(22px);
     }
-
-    .hero-card {
-      padding: 18px;
+    .card.deep {
       background:
-        radial-gradient(circle at top right, rgba(139,92,246,.22), transparent 34%),
-        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+        radial-gradient(circle at top right, rgba(139,92,246,0.18), transparent 34%),
+        radial-gradient(circle at bottom left, rgba(6,182,212,0.10), transparent 28%),
+        linear-gradient(180deg, rgba(16,21,32,0.96), rgba(10,13,20,0.98));
+    }
+    body.light .card.deep {
+      background:
+        radial-gradient(circle at top right, rgba(139,92,246,0.11), transparent 34%),
+        radial-gradient(circle at bottom left, rgba(6,182,212,0.08), transparent 28%),
+        linear-gradient(180deg, rgba(255,255,255,0.96), rgba(246,249,255,0.98));
     }
 
-    .row, .card-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-    }
+    .between, .card-head, .row { display:flex; justify-content:space-between; align-items:center; gap:12px; }
+    .card-title { font-size: 16px; font-weight: 700; letter-spacing: -.02em; }
+    .small { color: var(--muted); font-size: 12px; }
+    .tiny { color: var(--soft); font-size: 11px; }
+    .section-label { color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .16em; margin: 8px 0 10px; }
 
-    .metric {
-      display: grid;
-      gap: 6px;
+    .dashboard-top { display:grid; grid-template-columns: 128px 1fr; gap: 14px; align-items:center; }
+    .progress-wrap { width: 128px; height:128px; position:relative; display:grid; place-items:center; }
+    .ring {
+      width:128px; height:128px; border-radius:50%;
+      background: conic-gradient(var(--accent) 0deg, var(--accent-3) 0deg, rgba(255,255,255,0.08) 0deg 360deg);
+      display:grid; place-items:center;
+      box-shadow: inset 0 0 30px rgba(255,255,255,0.04), 0 14px 34px rgba(0,0,0,0.28);
     }
-    .metric-value {
-      font-size: 34px;
-      font-weight: 800;
-      letter-spacing: -.05em;
+    .ring::after {
+      content:""; width:94px; height:94px; border-radius:50%; position:absolute;
+      background: linear-gradient(180deg, var(--panel-2), rgba(8,10,16,0.98));
+      border:1px solid var(--line);
     }
-    .muted { color: var(--muted); }
-    .small { font-size: 12px; color: var(--muted); }
+    body.light .ring::after { background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(244,247,255,0.98)); }
+    .ring-content { position:absolute; z-index:2; text-align:center; }
+    .ring-day { font-size: 28px; font-weight: 760; letter-spacing: -.05em; }
+    .ring-sub { font-size: 11px; color: var(--muted); letter-spacing: .12em; text-transform: uppercase; }
+    .focus-metric { display:grid; gap:12px; }
+    .metric-line { display:flex; justify-content:space-between; align-items:center; gap:10px; padding-bottom:8px; border-bottom:1px solid var(--line-2); }
+    .metric-line:last-child { border-bottom:0; padding-bottom:0; }
+    .metric-value { font-size: 18px; font-weight: 720; letter-spacing: -.03em; }
 
-    .badge {
-      padding: 9px 12px;
-      border-radius: 999px;
-      background: rgba(139,92,246,.12);
-      color: var(--text);
-      border: 1px solid rgba(139,92,246,.26);
-      font-size: 12px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .progress-wrap {
-      margin-top: 14px;
-      display: grid;
-      gap: 10px;
-    }
-
-    .progress-track {
-      height: 12px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.06);
-      overflow: hidden;
-      border: 1px solid var(--line);
-    }
-    .progress-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--accent), var(--accent-2));
-      transition: width .22s ease;
-    }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .stat {
-      padding: 14px;
-      border-radius: 18px;
-      border: 1px solid var(--line);
-      background: var(--panel);
-      min-height: 88px;
-    }
-    .stat .label { color: var(--muted); font-size: 12px; margin-bottom: 10px; }
-    .stat .value { font-size: 24px; font-weight: 800; letter-spacing: -.04em; }
-
-    .section-title {
-      font-size: 16px;
-      font-weight: 750;
-      letter-spacing: -.02em;
-    }
-
-    .task-list, .log-list, .profile-list {
-      display: grid;
-      gap: 10px;
-      margin-top: 14px;
-    }
-
-    .task-item, .log-item, .profile-item {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px;
-      border-radius: 18px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.03);
-    }
-
-    .task-main, .log-main {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      min-width: 0;
-      flex: 1;
-    }
-
-    .check {
-      width: 26px;
-      height: 26px;
-      border-radius: 9px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.03);
-      display: grid;
-      place-items: center;
-      flex: 0 0 auto;
-      cursor: pointer;
-      font-size: 14px;
-      color: transparent;
-      transition: all .18s ease;
-    }
-    .task-item.done .check {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      color: white;
-      border-color: transparent;
-    }
-    .task-item.done .task-name { text-decoration: line-through; opacity: .72; }
-
-    .task-name, .log-name, .profile-name {
-      font-size: 14px;
-      font-weight: 700;
-      line-height: 1.3;
-    }
-    .task-sub, .log-sub, .profile-sub {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 4px;
-      line-height: 1.4;
-    }
-
-    .score {
-      min-width: 54px;
-      text-align: center;
-      padding: 9px 10px;
-      border-radius: 14px;
-      font-size: 12px;
-      font-weight: 800;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.04);
-    }
-    .score.good { color: #86efac; background: rgba(34,197,94,.12); }
-    .score.bad { color: #fda4af; background: rgba(239,68,68,.12); }
-
-    .chips {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 14px;
-    }
-    .chip-btn {
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.04);
-      color: var(--text);
-      border-radius: 999px;
-      padding: 10px 12px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .roadmap-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .roadmap {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 10px;
-    }
-
-    .day-cell {
-      aspect-ratio: 1 / 1;
-      border-radius: 18px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.03);
-      color: var(--text);
-      display: grid;
-      place-items: center;
-      position: relative;
-      cursor: pointer;
-      font-size: 13px;
-      font-weight: 800;
-    }
-    .day-cell.current { outline: 2px solid rgba(139,92,246,.7); outline-offset: 0; }
-    .day-cell.complete { background: rgba(34,197,94,.14); }
-    .day-cell.missed { background: rgba(239,68,68,.14); }
-    .day-cell.empty { opacity: .72; }
-    .day-dot {
-      position: absolute;
-      bottom: 7px;
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: currentColor;
-      opacity: .85;
-    }
-
-    .journal {
-      width: 100%;
-      min-height: 148px;
-      resize: vertical;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.04);
-      color: var(--text);
-      padding: 14px;
-      border-radius: 18px;
-      outline: none;
-      line-height: 1.55;
-    }
-
-    .field, .field-grid {
-      display: grid;
-      gap: 8px;
-      margin-top: 12px;
-    }
-    .field-grid { grid-template-columns: 1fr 1fr; }
-
-    .input, .select {
-      width: 100%;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.04);
-      color: var(--text);
-      border-radius: 16px;
-      padding: 13px 14px;
-      outline: none;
-    }
-
-    .btn-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 12px;
-    }
-
-    .btn {
-      border: 0;
-      border-radius: 18px;
-      padding: 14px;
-      font-weight: 800;
-      cursor: pointer;
-      transition: transform .15s ease, opacity .15s ease;
-    }
-    .btn:active { transform: scale(.985); }
-    .btn-primary {
-      color: white;
-      background: linear-gradient(135deg, var(--accent), #7c3aed 55%, var(--accent-2) 140%);
-      box-shadow: 0 14px 36px rgba(139,92,246,.28);
-    }
-    .btn-secondary {
-      color: var(--text);
-      background: rgba(255,255,255,.05);
-      border: 1px solid var(--line);
-    }
-    .btn-danger {
-      color: white;
-      background: linear-gradient(135deg, #ef4444, #f97316);
-    }
-
-    .empty {
+    .hero-home {
       padding: 18px;
-      border-radius: 18px;
-      border: 1px dashed var(--line);
-      color: var(--muted);
-      text-align: center;
-      background: rgba(255,255,255,.02);
-      margin-top: 14px;
+      border-radius: 30px;
+      background:
+        radial-gradient(circle at 80% 20%, rgba(34,197,94,0.15), transparent 28%),
+        radial-gradient(circle at 18% 20%, rgba(139,92,246,0.20), transparent 30%),
+        linear-gradient(180deg, rgba(17,21,33,0.98), rgba(10,12,20,0.98));
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      margin-bottom: 14px;
     }
+    body.light .hero-home {
+      background:
+        radial-gradient(circle at 80% 20%, rgba(34,197,94,0.10), transparent 28%),
+        radial-gradient(circle at 18% 20%, rgba(139,92,246,0.12), transparent 30%),
+        linear-gradient(180deg, rgba(255,255,255,0.96), rgba(245,248,255,0.98));
+    }
+    .hero-home h1 { font-size: 34px; }
+    .hero-home p { max-width:none; }
+    .home-top-row { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+    .focus-banner {
+      margin-top: 16px; padding: 14px; border-radius: 22px;
+      background: rgba(255,255,255,0.04); border: 1px solid var(--line);
+      display:grid; grid-template-columns: 1fr auto; gap:10px; align-items:center;
+    }
+    .focus-banner strong { display:block; font-size: 14px; margin-bottom: 4px; }
+
+    .stats-grid { display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; }
+    .stat { padding:15px 14px; border-radius: 20px; background: rgba(255,255,255,0.035); border: 1px solid var(--line); }
+    .stat .label { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+    .stat .value { font-size: 24px; font-weight: 740; letter-spacing: -.05em; }
+
+    .task-list, .feed, .journal-list, .photo-grid, .record-list { display:grid; gap:10px; }
+    .task {
+      display:flex; align-items:center; gap:12px; padding:14px; border-radius: 20px; border:1px solid var(--line); background: rgba(255,255,255,0.03); cursor:pointer;
+    }
+    .task.done { background: rgba(34,197,94,0.11); border-color: rgba(34,197,94,0.22); }
+    .check {
+      width:26px; height:26px; border-radius:9px; border:1px solid var(--line); display:grid; place-items:center; flex:0 0 auto; color:transparent; background: rgba(255,255,255,0.03);
+    }
+    .task.done .check { background: linear-gradient(135deg, var(--accent), var(--accent-2)); color:white; border-color:transparent; box-shadow: 0 10px 24px rgba(34,197,94,0.2); }
+    .task-main { flex:1; min-width:0; }
+    .task-name { font-size:14px; font-weight:660; margin-bottom:4px; }
+    .task-sub { font-size:12px; color: var(--muted); white-space: nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+    .btn-row { display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+    button, input, textarea, select { font: inherit; }
+    button { border:0; cursor:pointer; transition: transform .15s ease, opacity .15s ease, box-shadow .15s ease; }
+    button:active { transform: translateY(1px) scale(.995); }
+    .btn { padding:15px 14px; border-radius: 18px; font-weight: 690; letter-spacing: -.01em; }
+    .btn.primary { color:white; background: linear-gradient(135deg, #7c3aed, #8b5cf6 45%, #06b6d4 120%); box-shadow: 0 14px 30px rgba(124,58,237,0.32); }
+    .btn.secondary { color: var(--text); background: rgba(255,255,255,0.05); border: 1px solid var(--line); }
+    .btn.ghost { color: var(--text); background: transparent; border: 1px solid var(--line); }
+    .btn.sm { padding: 11px 12px; border-radius: 14px; font-size: 12px; }
+
+    .roadmap-shell { display:grid; gap:12px; }
+    .roadmap {
+      display:grid; gap:8px;
+    }
+    .roadmap.collapsed {
+      grid-auto-flow: column;
+      grid-auto-columns: 48px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+    .roadmap.collapsed::-webkit-scrollbar { display:none; }
+    .roadmap.expanded { grid-template-columns: repeat(5, 1fr); }
+    .road-day {
+      aspect-ratio: 1 / 1; min-width: 48px;
+      border-radius: 16px; border:1px solid var(--line); background: rgba(255,255,255,0.03);
+      position:relative; display:grid; place-items:center; color: var(--text); cursor:pointer; font-size:12px; font-weight:650;
+    }
+    .road-day.done { background: rgba(34,197,94,0.14); border-color: rgba(34,197,94,0.22); }
+    .road-day.missed { background: rgba(239,68,68,0.12); border-color: rgba(239,68,68,0.18); }
+    .road-day.partial { background: rgba(6,182,212,0.11); border-color: rgba(6,182,212,0.18); }
+    .road-day.today { outline: 2px solid rgba(139,92,246,0.65); }
+    .road-day.future { opacity: .42; }
+    .road-day span.dot { position:absolute; bottom:6px; width:5px; height:5px; border-radius:50%; background: currentColor; opacity:.75; }
+
+    .meter { height: 10px; border-radius:999px; background: rgba(255,255,255,0.05); overflow:hidden; border:1px solid var(--line); margin-top: 12px; }
+    .meter > div { height:100%; width:0; background: linear-gradient(90deg, var(--accent), var(--accent-2)); transition: width .25s ease; }
+
+    .journal-area, .input, .select {
+      width:100%; border-radius: 18px; background: rgba(255,255,255,0.04); border:1px solid var(--line); color: var(--text); padding:14px; outline:none;
+    }
+    .journal-area { min-height: 160px; resize: vertical; line-height:1.55; }
+    .field, .field-row { display:grid; gap:8px; margin-top:12px; }
+    .field-row { grid-template-columns: 1fr 1fr; }
+
+    .feed-item, .journal-item, .record-item {
+      padding:14px; border-radius:18px; border:1px solid var(--line); background: rgba(255,255,255,0.03);
+    }
+    .top { display:flex; justify-content:space-between; gap:10px; align-items:center; margin-bottom:8px; }
+    .score { min-width:56px; text-align:center; padding:9px 10px; border-radius:14px; font-size:12px; font-weight:720; border:1px solid var(--line); }
+    .score.pos { background: var(--good-bg); color: #7ff2ad; }
+    .score.neg { background: var(--bad-bg); color: #ff95aa; }
+
+    .photo-actions { display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top: 12px; }
+    .photo-input { display:none; }
+    .photo-grid { grid-template-columns: repeat(2, 1fr); }
+    .photo-card {
+      border-radius: 22px; overflow:hidden; border:1px solid var(--line); background: rgba(255,255,255,0.03);
+    }
+    .photo-card img { width:100%; aspect-ratio: 1 / 1.2; object-fit: cover; display:block; background:#0d1119; }
+    .photo-card .meta { padding: 10px 12px 12px; }
+
+    .profile-grid { display:grid; gap:12px; }
+    .setting-row { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:14px 0; border-bottom:1px solid var(--line-2); }
+    .setting-row:last-child { border-bottom:0; padding-bottom:0; }
+    .setting-row:first-child { padding-top:0; }
+
+    .switch {
+      width: 52px; height: 30px; border-radius:999px; background: rgba(255,255,255,0.08); border:1px solid var(--line); position:relative; cursor:pointer;
+    }
+    .switch::after {
+      content:""; position:absolute; top:3px; left:3px; width:22px; height:22px; border-radius:50%; background:white; transition:.2s ease; box-shadow: 0 4px 12px rgba(0,0,0,0.18);
+    }
+    .switch.on { background: linear-gradient(135deg, var(--accent), var(--accent-2)); border-color: transparent; }
+    .switch.on::after { left:25px; }
 
     .bottom-nav {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      z-index: 30;
-      background: rgba(9,13,20,.92);
-      border-top: 1px solid var(--line);
-      backdrop-filter: blur(18px);
-      padding: 8px 10px calc(8px + env(safe-area-inset-bottom));
+      position: fixed; left:0; right:0; bottom:0; z-index: 80;
+      display:grid; grid-template-columns: repeat(5, 1fr); gap:6px;
+      padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+      background: color-mix(in srgb, var(--tabbar) 92%, transparent);
+      border-top: 1px solid var(--line); backdrop-filter: blur(22px); box-shadow: 0 -10px 30px rgba(0,0,0,0.18);
     }
-    body.light .bottom-nav { background: rgba(255,255,255,.92); }
-
-    .bottom-nav-inner {
-      max-width: 480px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 6px;
-    }
-
     .nav-btn {
-      border: 0;
-      background: transparent;
-      color: var(--muted);
-      border-radius: 16px;
-      padding: 8px 4px 10px;
-      display: grid;
-      justify-items: center;
-      gap: 6px;
-      cursor: pointer;
+      background: transparent; color: var(--muted); padding: 8px 2px; border-radius: 18px; display:flex; flex-direction:column; align-items:center; gap:6px; font-size:11px;
     }
-    .nav-btn.active {
-      color: var(--text);
-      background: rgba(255,255,255,.04);
+    .nav-ico {
+      width:34px; height:34px; border-radius:12px; display:grid; place-items:center; background: rgba(255,255,255,0.04); border:1px solid transparent; font-size:15px;
     }
-    .nav-icon {
-      width: 28px;
-      height: 28px;
-      display: grid;
-      place-items: center;
-      font-size: 17px;
-      font-weight: 700;
-    }
-    .nav-label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: .01em;
+    .nav-btn.active { color: var(--text); }
+    .nav-btn.active .nav-ico {
+      background: linear-gradient(180deg, rgba(139,92,246,0.22), rgba(6,182,212,0.08)); border-color: rgba(139,92,246,0.35); box-shadow: 0 0 28px rgba(139,92,246,0.16);
     }
 
     .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(2,6,12,.56);
-      display: none;
-      align-items: flex-end;
-      justify-content: center;
-      padding: 12px;
-      z-index: 40;
-      backdrop-filter: blur(8px);
+      position: fixed; inset: 0; background: rgba(3,5,10,0.68); backdrop-filter: blur(8px); display:none; align-items:flex-end; justify-content:center; padding:16px; z-index:99;
     }
-    .modal-backdrop.show { display: flex; }
-
+    .modal-backdrop.show { display:flex; }
     .modal {
-      width: min(480px, 100%);
-      max-height: 88dvh;
-      overflow: auto;
-      border-radius: 24px;
-      background: linear-gradient(180deg, rgba(14,19,28,.98), rgba(9,12,19,.98));
-      border: 1px solid var(--line);
-      padding: 16px;
-      box-shadow: var(--shadow);
+      width:min(420px, 100%); max-height:88vh; overflow:auto; border-radius:28px; border:1px solid var(--line);
+      background: linear-gradient(180deg, rgba(17,21,31,0.98), rgba(9,12,19,0.99)); padding:18px; box-shadow: var(--shadow);
     }
-    body.light .modal {
-      background: linear-gradient(180deg, rgba(255,255,255,.98), rgba(247,250,255,.98));
+    body.light .modal { background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(245,248,255,0.99)); }
+    .close-btn {
+      width:42px; height:42px; border-radius:14px; background: rgba(255,255,255,0.05); color: var(--text); border:1px solid var(--line);
+    }
+    .empty {
+      padding:16px; border-radius:18px; border:1px dashed var(--line); background: rgba(255,255,255,0.02); color: var(--muted); text-align:center;
     }
 
-    .modal-close {
-      width: 40px;
-      height: 40px;
-      border-radius: 14px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.04);
-      color: var(--text);
-      cursor: pointer;
-    }
-
-    @media (min-width: 768px) {
-      .app { box-shadow: var(--shadow); }
-      body { padding-bottom: 0; }
+    @media (min-width: 700px) {
+      .app { max-width: 460px; margin: 0 auto; }
+      .bottom-nav { max-width: 460px; margin: 0 auto; left:50%; transform: translateX(-50%); border-left:1px solid var(--line); border-right:1px solid var(--line); }
     }
   </style>
 </head>
 <body>
   <div class="app">
     <section class="screen active" id="screen-home">
-      <div class="topbar">
-        <div class="brand">
-          <div class="eyebrow">75 Hard</div>
-          <div class="title">Stay on track.</div>
+      <div class="hero-home">
+        <div class="home-top-row">
+          <div>
+            <div class="eyebrow">75 Hard</div>
+            <h1>Built to feel<br>locked in.</h1>
+            <p>Your daily system, your proof, your progress. Clean, serious, and made to feel like a real app on your phone.</p>
+          </div>
+          <button class="toggle-pill" id="themeToggleTop">Theme</button>
         </div>
-        <div class="top-actions">
-          <button class="icon-btn" id="themeToggle" aria-label="Toggle theme">◐</button>
+        <div class="focus-banner">
+          <div>
+            <strong id="homeFocusTitle">Start with the next task.</strong>
+            <div class="small" id="homeFocusText">One clean action changes the day.</div>
+          </div>
+          <div class="pill" id="focusDayPill">Day 1</div>
         </div>
       </div>
 
-      <div class="card hero-card">
-        <div class="row">
-          <div>
-            <div class="section-title">Day <span id="heroDay">1</span> of 75</div>
-            <p class="subtitle">A focused daily system for finishing the challenge without clutter or noise.</p>
+      <div class="card deep">
+        <div class="dashboard-top">
+          <div class="progress-wrap">
+            <div class="ring" id="progressRing"></div>
+            <div class="ring-content">
+              <div class="ring-day" id="currentDay">1</div>
+              <div class="ring-sub">Day</div>
+            </div>
           </div>
-          <div class="badge" id="heroBadge">0%</div>
-        </div>
-        <div class="progress-wrap">
-          <div class="progress-track"><div class="progress-fill" id="heroProgress"></div></div>
-          <div class="row small"><span id="heroProgressText">0 of 75 days complete</span><span id="heroStreak">0 day streak</span></div>
+          <div class="focus-metric">
+            <div class="metric-line">
+              <div>
+                <div class="small">Challenge</div>
+                <div class="metric-value" id="completionPercent">0%</div>
+              </div>
+              <div class="tag" id="statusPill">In progress</div>
+            </div>
+            <div class="metric-line">
+              <div>
+                <div class="small">Today</div>
+                <div class="metric-value" id="todayDone">0 / 6</div>
+              </div>
+              <div class="tiny" id="todayState">Start clean</div>
+            </div>
+            <div class="metric-line">
+              <div>
+                <div class="small">Perfect streak</div>
+                <div class="metric-value" id="perfectStreak">0</div>
+              </div>
+              <div class="tiny">days</div>
+            </div>
+          </div>
         </div>
       </div>
 
       <div class="stats-grid">
-        <div class="stat"><div class="label">Tasks</div><div class="value" id="statTasks">0/6</div></div>
-        <div class="stat"><div class="label">Water</div><div class="value" id="statWater">0L</div></div>
-        <div class="stat"><div class="label">Pages</div><div class="value" id="statPages">0</div></div>
+        <div class="stat"><div class="label">Perfect days</div><div class="value" id="perfectDaysValue">0</div><div class="tiny">done</div></div>
+        <div class="stat"><div class="label">Tasks left</div><div class="value" id="tasksLeftValue">6</div><div class="tiny">today</div></div>
+        <div class="stat"><div class="label">Photos</div><div class="value" id="photoCountValue">0</div><div class="tiny">saved</div></div>
+      </div>
+
+      <div class="section-label">Today</div>
+      <div class="task-list" id="taskList"></div>
+
+      <div class="btn-row">
+        <button class="btn primary" id="completeAllBtn">Complete all</button>
+        <button class="btn secondary" id="resetTodayBtn">Reset today</button>
       </div>
 
       <div class="card">
         <div class="card-head">
           <div>
-            <div class="section-title">Today</div>
-            <div class="small">Tap to complete each requirement</div>
+            <div class="card-title">Latest progress photo</div>
+            <div class="small">Tap below to capture from your phone</div>
           </div>
-          <div class="badge" id="todayBadge">In progress</div>
+          <button class="btn secondary sm" id="openProgressTabBtn">Open</button>
         </div>
-        <div class="task-list" id="taskList"></div>
-      </div>
-
-      <div class="card">
-        <div class="card-head">
-          <div>
-            <div class="section-title">Quick actions</div>
-            <div class="small">Fast updates without opening forms</div>
-          </div>
-        </div>
-        <div class="chips">
-          <button class="chip-btn" data-add-water="0.5">+ 0.5L water</button>
-          <button class="chip-btn" data-add-water="1">+ 1L water</button>
-          <button class="chip-btn" data-add-pages="10">+ 10 pages</button>
-          <button class="chip-btn" id="openLogModal">Add note</button>
-        </div>
+        <div id="homePhotoPreview" class="empty">No progress photo yet.</div>
       </div>
     </section>
 
     <section class="screen" id="screen-roadmap">
-      <div class="topbar">
-        <div class="brand">
-          <div class="eyebrow">Progress</div>
-          <div class="title">75-day roadmap.</div>
+      <div class="hero">
+        <div>
+          <div class="eyebrow">Roadmap</div>
+          <h1>Compressed first.<br>Expandable when needed.</h1>
+          <p>See the 75-day path in one row, then expand it when you want the full map.</p>
         </div>
-        <div class="top-actions">
-          <button class="icon-btn" id="jumpToday">↺</button>
+        <button class="btn secondary sm" id="toggleRoadmapViewBtn">Expand</button>
+      </div>
+
+      <div class="card deep">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Challenge progress</div>
+            <div class="small">Perfect days only count as complete</div>
+          </div>
+          <div class="score pos" id="daysCompleteScore">0</div>
+        </div>
+        <div class="meter"><div id="challengeMeter"></div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head" style="margin-bottom:12px;">
+          <div>
+            <div class="card-title">75-day map</div>
+            <div class="small" id="roadmapHelpText">One-row compact view</div>
+          </div>
+          <button class="btn secondary sm" id="jumpTodayBtn">Today</button>
+        </div>
+        <div class="roadmap-shell">
+          <div class="roadmap collapsed" id="roadmapGrid"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen" id="screen-progress">
+      <div class="hero">
+        <div>
+          <div class="eyebrow">Progress</div>
+          <h1>Photos, records,<br>and real proof.</h1>
+          <p>Track your visual progress and review everything you’ve actually done.</p>
+        </div>
+        <label class="btn primary sm" for="photoInput">Add photo</label>
+      </div>
+
+      <input class="photo-input" type="file" id="photoInput" accept="image/*" capture="environment" />
+
+      <div class="card deep">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Progress photos</div>
+            <div class="small">Camera opens on supported phones</div>
+          </div>
+          <div class="pill" id="photoVaultCount">0 saved</div>
+        </div>
+        <div class="photo-actions">
+          <label class="btn primary" for="photoInput">Take progress pic</label>
+          <button class="btn secondary" id="clearPhotosBtn">Clear photos</button>
         </div>
       </div>
 
       <div class="card">
-        <div class="roadmap-head">
+        <div class="card-head">
           <div>
-            <div class="section-title">Your challenge</div>
-            <div class="small">Green means completed. Red means failed day. Gray means upcoming.</div>
+            <div class="card-title">Photo vault</div>
+            <div class="small">Latest images stay attached to your timeline</div>
           </div>
-          <div class="badge" id="roadmapBadge">0/75</div>
         </div>
-        <div class="roadmap" id="roadmapGrid"></div>
+        <div class="photo-grid" id="photoGrid"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Records</div>
+            <div class="small">Recent actions, saves, and completed moments</div>
+          </div>
+        </div>
+        <div class="record-list" id="recordList"></div>
       </div>
     </section>
 
     <section class="screen" id="screen-journal">
-      <div class="topbar">
-        <div class="brand">
+      <div class="hero">
+        <div>
           <div class="eyebrow">Journal</div>
-          <div class="title">Review the day.</div>
+          <h1>Better notes.<br>Cleaner history.</h1>
+          <p>Save your weight, mood, and short review without making the page feel heavy.</p>
         </div>
-        <div class="top-actions">
-          <button class="icon-btn" id="clearJournal">⌫</button>
-        </div>
+        <button class="btn primary sm" id="saveJournalBtnTop">Save</button>
       </div>
 
-      <div class="card">
-        <div class="card-head">
-          <div>
-            <div class="section-title">Today’s entry</div>
-            <div class="small" id="journalDateLabel">Today</div>
+      <div class="card deep">
+        <div class="field" style="margin-top:0;">
+          <label class="small">Journal date</label>
+          <input class="input" type="date" id="journalDateInput" />
+        </div>
+        <div class="field-row">
+          <div class="field" style="margin-top:0;">
+            <label class="small">Weight</label>
+            <input class="input" id="weightInput" placeholder="e.g. 182.4 lb" />
+          </div>
+          <div class="field" style="margin-top:0;">
+            <label class="small">Mood</label>
+            <select class="select" id="moodInput">
+              <option>Locked in</option>
+              <option>Solid</option>
+              <option>Flat</option>
+              <option>Off track</option>
+            </select>
           </div>
         </div>
-        <textarea class="journal" id="journalInput" placeholder="How did the day feel? What almost broke your consistency? What helped you stay disciplined?"></textarea>
+        <div class="field">
+          <label class="small">Journal</label>
+          <textarea class="journal-area" id="journalInput" placeholder="What mattered today? What was hard? What needs to happen tomorrow?"></textarea>
+        </div>
         <div class="btn-row">
-          <button class="btn btn-primary" id="saveJournal">Save journal</button>
-          <button class="btn btn-secondary" id="openLogModal2">Add checkpoint</button>
+          <button class="btn primary" id="saveJournalBtn">Save journal</button>
+          <button class="btn ghost" id="clearJournalBtn">Clear</button>
         </div>
       </div>
 
       <div class="card">
         <div class="card-head">
           <div>
-            <div class="section-title">Today’s checkpoints</div>
-            <div class="small">Notes and updates you saved</div>
+            <div class="card-title">Recent entries</div>
+            <div class="small">Tap an entry to load it back into the editor</div>
           </div>
         </div>
-        <div class="log-list" id="logList"></div>
+        <div class="journal-list" id="journalList"></div>
       </div>
     </section>
 
     <section class="screen" id="screen-profile">
-      <div class="topbar">
-        <div class="brand">
+      <div class="hero">
+        <div>
           <div class="eyebrow">Profile</div>
-          <div class="title">Settings and setup.</div>
+          <h1>Setup that feels<br>actually useful.</h1>
+          <p>Keep your challenge settings, theme, and reset controls in one clean place.</p>
+        </div>
+        <div class="pill" id="themeNamePill">Dark</div>
+      </div>
+
+      <div class="card deep">
+        <div class="profile-grid">
+          <div class="setting-row">
+            <div>
+              <div class="card-title">Theme mode</div>
+              <div class="small">Switch between dark and light</div>
+            </div>
+            <div class="switch" id="themeSwitch"></div>
+          </div>
+          <div class="setting-row">
+            <div>
+              <div class="card-title">Challenge start</div>
+              <div class="small">Used for the full 75-day roadmap</div>
+            </div>
+            <input class="input" type="date" id="startDateInput" style="max-width:154px; padding:10px 12px; border-radius:14px;" />
+          </div>
+          <div class="setting-row">
+            <div>
+              <div class="card-title">Roadmap mode</div>
+              <div class="small">Keep the roadmap collapsed by default</div>
+            </div>
+            <div class="switch" id="roadmapSwitch"></div>
+          </div>
+          <div class="setting-row">
+            <div>
+              <div class="card-title">Reset all data</div>
+              <div class="small">Clear checklist, roadmap, photos, and journal locally</div>
+            </div>
+            <button class="btn secondary sm" id="resetAllBtn">Reset</button>
+          </div>
         </div>
       </div>
 
       <div class="card">
-        <div class="metric">
-          <div class="small">Challenge progress</div>
-          <div class="metric-value" id="profilePercent">0%</div>
-          <div class="muted" id="profileMeta">Day 1 • 0 completed days</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="section-title">Challenge settings</div>
-        <div class="field-grid">
-          <div class="field">
-            <label class="small">Start date</label>
-            <input type="date" class="input" id="startDateInput" />
-          </div>
-          <div class="field">
-            <label class="small">Theme</label>
-            <select class="select" id="themeSelect">
-              <option value="dark">Dark</option>
-              <option value="light">Light</option>
-            </select>
+        <div class="card-head">
+          <div>
+            <div class="card-title">Challenge summary</div>
+            <div class="small">A fast snapshot of your current run</div>
           </div>
         </div>
-        <div class="btn-row">
-          <button class="btn btn-primary" id="saveSettings">Save settings</button>
-          <button class="btn btn-danger" id="resetAll">Reset app</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="section-title">What this tracks</div>
-        <div class="profile-list">
-          <div class="profile-item">
-            <div>
-              <div class="profile-name">Workout 1</div>
-              <div class="profile-sub">One daily workout</div>
-            </div>
-          </div>
-          <div class="profile-item">
-            <div>
-              <div class="profile-name">Workout 2 / Outdoor</div>
-              <div class="profile-sub">Second workout and outdoor requirement</div>
-            </div>
-          </div>
-          <div class="profile-item">
-            <div>
-              <div class="profile-name">Diet, water, reading</div>
-              <div class="profile-sub">Core consistency rules with progress tracking</div>
-            </div>
-          </div>
+        <div class="stats-grid">
+          <div class="stat"><div class="label">Current day</div><div class="value" id="summaryDay">1</div><div class="tiny">of 75</div></div>
+          <div class="stat"><div class="label">Perfect days</div><div class="value" id="summaryPerfect">0</div><div class="tiny">complete</div></div>
+          <div class="stat"><div class="label">Entries</div><div class="value" id="summaryEntries">0</div><div class="tiny">journaled</div></div>
         </div>
       </div>
     </section>
-  </div>
 
-  <nav class="bottom-nav">
-    <div class="bottom-nav-inner">
-      <button class="nav-btn active" data-target="screen-home">
-        <div class="nav-icon">⌂</div>
-        <div class="nav-label">Home</div>
-      </button>
-      <button class="nav-btn" data-target="screen-roadmap">
-        <div class="nav-icon">▦</div>
-        <div class="nav-label">Roadmap</div>
-      </button>
-      <button class="nav-btn" data-target="screen-journal">
-        <div class="nav-icon">✎</div>
-        <div class="nav-label">Journal</div>
-      </button>
-      <button class="nav-btn" data-target="screen-profile">
-        <div class="nav-icon">⚙</div>
-        <div class="nav-label">Profile</div>
-      </button>
-    </div>
-  </nav>
-
-  <div class="modal-backdrop" id="modalBackdrop">
-    <div class="modal">
-      <div class="card-head" style="margin-bottom: 8px;">
-        <div>
-          <div class="eyebrow" style="margin-bottom: 6px;">Checkpoint</div>
-          <div class="title" style="font-size: 24px;">Add a note</div>
-        </div>
-        <button class="modal-close" id="closeModal">✕</button>
-      </div>
-      <div class="field-grid">
-        <div class="field">
-          <label class="small">Type</label>
-          <select class="select" id="logType">
-            <option value="Win">Win</option>
-            <option value="Struggle">Struggle</option>
-            <option value="Note">Note</option>
-          </select>
-        </div>
-        <div class="field">
-          <label class="small">Date</label>
-          <input type="date" class="input" id="logDate" />
-        </div>
-      </div>
-      <div class="field">
-        <label class="small">Title</label>
-        <input class="input" id="logTitle" placeholder="Morning workout done, almost skipped reading..." />
-      </div>
-      <div class="field">
-        <label class="small">Details</label>
-        <textarea class="journal" id="logDetails" style="min-height: 110px;" placeholder="Anything useful you want to remember about today."></textarea>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-primary" id="saveLog">Save note</button>
-        <button class="btn btn-secondary" id="cancelLog">Cancel</button>
-      </div>
-    </div>
+    <nav class="bottom-nav">
+      <button class="nav-btn active" data-target="screen-home"><div class="nav-ico">⌂</div><span>Home</span></button>
+      <button class="nav-btn" data-target="screen-roadmap"><div class="nav-ico">◫</div><span>Roadmap</span></button>
+      <button class="nav-btn" data-target="screen-progress"><div class="nav-ico">◎</div><span>Progress</span></button>
+      <button class="nav-btn" data-target="screen-journal"><div class="nav-ico">✎</div><span>Journal</span></button>
+      <button class="nav-btn" data-target="screen-profile"><div class="nav-ico">◇</div><span>Profile</span></button>
+    </nav>
   </div>
 
   <div class="modal-backdrop" id="dayModalBackdrop">
     <div class="modal">
-      <div class="card-head" style="margin-bottom: 8px;">
+      <div class="between" style="margin-bottom:14px;">
         <div>
-          <div class="eyebrow" style="margin-bottom: 6px;">Day details</div>
-          <div class="title" style="font-size: 24px;" id="dayModalTitle">Day 1</div>
+          <div class="eyebrow" style="margin-bottom:6px;">Day details</div>
+          <h2 style="font-size:24px; letter-spacing:-.04em;" id="dayModalTitle">Day</h2>
         </div>
-        <button class="modal-close" id="closeDayModal">✕</button>
+        <button class="close-btn" id="closeDayModal">✕</button>
       </div>
-      <div class="card" style="margin-bottom: 12px;">
-        <div class="row">
+      <div class="stats-grid" style="margin-bottom:14px;">
+        <div class="stat"><div class="label">Tasks</div><div class="value" id="modalTasksDone">0/6</div><div class="tiny">complete</div></div>
+        <div class="stat"><div class="label">Status</div><div class="value" id="modalStatus">—</div><div class="tiny">result</div></div>
+        <div class="stat"><div class="label">Weight</div><div class="value" id="modalWeight">—</div><div class="tiny">logged</div></div>
+      </div>
+      <div class="card" style="margin-bottom:14px;">
+        <div class="card-head">
           <div>
-            <div class="section-title">Status</div>
-            <div class="small" id="dayModalStatus">In progress</div>
+            <div class="card-title">Checklist</div>
+            <div class="small">Saved task status for this day</div>
           </div>
-          <div class="badge" id="dayModalBadge">0/6</div>
         </div>
+        <div class="task-list" id="modalTaskList"></div>
+      </div>
+      <div class="card" style="margin-bottom:14px;">
+        <div class="card-head">
+          <div>
+            <div class="card-title">Journal</div>
+            <div class="small">Reflection tied to this exact date</div>
+          </div>
+        </div>
+        <div id="modalJournal" class="empty">No journal saved for this day.</div>
       </div>
       <div class="card">
-        <div class="section-title">Saved notes</div>
-        <div class="log-list" id="dayModalLogs"></div>
+        <div class="card-head">
+          <div>
+            <div class="card-title">Progress photo</div>
+            <div class="small">Latest image saved for that day</div>
+          </div>
+        </div>
+        <div id="modalPhoto" class="empty">No progress photo for this day.</div>
       </div>
     </div>
   </div>
 
   <script>
-    const STORAGE_KEY = 'hard75_app_like_v1';
+    const STORAGE_KEY = 'hard75_premium_v4';
     const TASKS = [
-      { id: 'workout1', name: 'Workout 1', sub: 'First workout completed' },
-      { id: 'workout2', name: 'Workout 2', sub: 'Second workout completed' },
-      { id: 'outdoor', name: 'Outdoor workout', sub: 'At least 45 minutes outside' },
-      { id: 'diet', name: 'Follow diet', sub: 'Stayed fully on plan' },
-      { id: 'water', name: 'Drink water', sub: 'Target: 3.8L / 1 gallon' },
-      { id: 'reading', name: 'Read 10 pages', sub: 'Non-fiction or growth reading' }
+      { id: 'workout1', name: 'Workout 1', desc: 'First 45-minute workout' },
+      { id: 'workout2', name: 'Workout 2', desc: 'Second 45-minute workout' },
+      { id: 'diet', name: 'Diet', desc: 'Stayed on plan with no cheat meal' },
+      { id: 'water', name: 'Water', desc: 'Finished 1 gallon of water' },
+      { id: 'reading', name: 'Read 10 pages', desc: 'Non-fiction only' },
+      { id: 'photo', name: 'Progress photo', desc: 'Captured and saved today' }
     ];
 
-    function keyForDate(date) {
+    function formatDate(date) {
       const y = date.getFullYear();
       const m = String(date.getMonth() + 1).padStart(2, '0');
       const d = String(date.getDate()).padStart(2, '0');
       return `${y}-${m}-${d}`;
     }
-
-    function parseDateKey(key) {
-      return new Date(key + 'T12:00:00');
+    function todayKey() { return formatDate(new Date()); }
+    function prettyDate(key) {
+      const d = new Date(key + 'T12:00:00');
+      return d.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
     }
-
-    function todayKey() { return keyForDate(new Date()); }
-
-    function daysBetween(startKey, endKey) {
-      const a = parseDateKey(startKey);
-      const b = parseDateKey(endKey);
-      const diff = b - a;
-      return Math.floor(diff / 86400000);
+    function clamp(n, min, max) { return Math.max(min, Math.min(max, n)); }
+    function daysDiff(a, b) {
+      const ms = 1000 * 60 * 60 * 24;
+      const aa = new Date(a + 'T00:00:00');
+      const bb = new Date(b + 'T00:00:00');
+      return Math.floor((bb - aa) / ms);
     }
-
-    function defaultState() {
-      const today = todayKey();
-      const start = today;
+    function defaultStartDate() {
+      const d = new Date();
+      d.setHours(0,0,0,0);
+      return formatDate(d);
+    }
+    function defaultDayState() {
       return {
-        settings: { theme: 'dark', startDate: start },
-        days: {
-          [today]: {
-            tasks: { workout1: false, workout2: false, outdoor: false, diet: false, water: false, reading: false },
-            waterLiters: 0,
-            pagesRead: 0,
-            journal: '',
-            logs: []
-          }
-        }
+        tasks: Object.fromEntries(TASKS.map(t => [t.id, false])),
+        journal: '',
+        mood: 'Locked in',
+        weight: '',
+        photo: ''
       };
     }
-
+    function buildDefaultState() {
+      return {
+        theme: 'dark',
+        startDate: defaultStartDate(),
+        roadmapExpanded: false,
+        selectedJournalDate: todayKey(),
+        days: { [todayKey()]: defaultDayState() },
+        feed: []
+      };
+    }
     function loadState() {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return defaultState();
-      try { return JSON.parse(raw); } catch { return defaultState(); }
+      if (!raw) return buildDefaultState();
+      const state = JSON.parse(raw);
+      state.days ||= {};
+      state.feed ||= [];
+      state.theme ||= 'dark';
+      state.startDate ||= defaultStartDate();
+      state.selectedJournalDate ||= todayKey();
+      if (typeof state.roadmapExpanded !== 'boolean') state.roadmapExpanded = false;
+      ensureDayInState(state, todayKey());
+      return state;
+    }
+    function ensureDayInState(stateObj, key) {
+      if (!stateObj.days[key]) stateObj.days[key] = defaultDayState();
+      for (const task of TASKS) {
+        if (typeof stateObj.days[key].tasks?.[task.id] !== 'boolean') {
+          stateObj.days[key].tasks ||= {};
+          stateObj.days[key].tasks[task.id] = false;
+        }
+      }
+      if (typeof stateObj.days[key].journal !== 'string') stateObj.days[key].journal = '';
+      if (typeof stateObj.days[key].mood !== 'string') stateObj.days[key].mood = 'Locked in';
+      if (typeof stateObj.days[key].weight !== 'string') stateObj.days[key].weight = '';
+      if (typeof stateObj.days[key].photo !== 'string') stateObj.days[key].photo = '';
     }
 
     let state = loadState();
-
-    function saveState() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+    function ensureDay(key) { ensureDayInState(state, key); }
+    function getDay(key = todayKey()) { ensureDay(key); return state.days[key]; }
+    function completedCount(key = todayKey()) { const day = getDay(key); return TASKS.filter(t => day.tasks[t.id]).length; }
+    function isPerfectDay(key) { return completedCount(key) === TASKS.length; }
+    function dayStatus(key) {
+      const today = todayKey();
+      const idx = daysDiff(state.startDate, key);
+      if (idx < 0 || idx >= 75) return 'outside';
+      if (key > today) return 'future';
+      const count = completedCount(key);
+      if (count === 6) return 'done';
+      if (count === 0 && key === today) return 'current';
+      if (key < today && count < 6) return count > 0 ? 'partial' : 'missed';
+      return count > 0 ? 'partial' : 'current';
     }
-
-    function ensureDay(key) {
-      if (!state.days[key]) {
-        state.days[key] = {
-          tasks: { workout1: false, workout2: false, outdoor: false, diet: false, water: false, reading: false },
-          waterLiters: 0,
-          pagesRead: 0,
-          journal: '',
-          logs: []
-        };
-      }
-      return state.days[key];
-    }
-
-    function currentDayNumber() {
-      return Math.min(75, Math.max(1, daysBetween(state.settings.startDate, todayKey()) + 1));
-    }
-
-    function completionCount(day) {
-      return Object.values(day.tasks).filter(Boolean).length;
-    }
-
-    function isDayComplete(key) {
-      const day = ensureDay(key);
-      return completionCount(day) === TASKS.length;
-    }
-
-    function isPast(key) {
-      return daysBetween(key, todayKey()) > 0;
-    }
-
-    function completedDaysCount() {
-      let count = 0;
+    function currentChallengeDay() { return clamp(daysDiff(state.startDate, todayKey()) + 1, 1, 75); }
+    function totalCompletedDays() {
+      let total = 0;
       for (let i = 0; i < 75; i++) {
-        const d = parseDateKey(state.settings.startDate);
+        const d = new Date(state.startDate + 'T00:00:00');
         d.setDate(d.getDate() + i);
-        const key = keyForDate(d);
-        if (isDayComplete(key)) count++;
+        if (isPerfectDay(formatDate(d))) total++;
       }
-      return count;
+      return total;
     }
-
-    function currentStreak() {
+    function perfectStreak() {
       let streak = 0;
-      for (let i = 0; i < 75; i++) {
-        const d = new Date();
-        d.setDate(d.getDate() - i);
-        const key = keyForDate(d);
-        if (isDayComplete(key)) streak++;
+      const d = new Date(todayKey() + 'T00:00:00');
+      while (true) {
+        const key = formatDate(d);
+        if (isPerfectDay(key)) { streak++; d.setDate(d.getDate() - 1); }
         else break;
       }
       return streak;
     }
-
-    function statusLabel(key) {
-      if (isDayComplete(key)) return 'Completed';
-      if (key === todayKey()) return 'In progress';
-      if (isPast(key)) return 'Missed';
-      return 'Upcoming';
+    function totalPhotoCount() {
+      return Object.values(state.days).filter(day => day.photo).length;
+    }
+    function totalJournalCount() {
+      return Object.values(state.days).filter(day => day.journal).length;
+    }
+    function latestPhotoKey() {
+      return Object.keys(state.days).filter(k => state.days[k].photo).sort((a,b) => b.localeCompare(a))[0] || '';
+    }
+    function focusCopy(completed) {
+      if (completed === 6) return ['Perfect day secured.', 'Everything is done. Protect the standard and close strong.'];
+      if (completed >= 4) return ['Close it out.', 'You are almost there. Finish the remaining tasks before the day gets noisy.'];
+      if (completed >= 2) return ['Momentum is real.', 'You already started. Stay clean and finish what this day requires.'];
+      return ['Start with the next task.', 'One clean action changes the day faster than waiting for motivation.'];
+    }
+    function feedPush(type, text, date = todayKey()) {
+      state.feed.unshift({
+        id: Date.now() + Math.random(),
+        type,
+        text,
+        date,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      });
+      state.feed = state.feed.slice(0, 40);
     }
 
-    const els = {
-      screens: Array.from(document.querySelectorAll('.screen')),
-      navBtns: Array.from(document.querySelectorAll('.nav-btn')),
-      themeToggle: document.getElementById('themeToggle'),
-      themeSelect: document.getElementById('themeSelect'),
-      heroDay: document.getElementById('heroDay'),
-      heroBadge: document.getElementById('heroBadge'),
-      heroProgress: document.getElementById('heroProgress'),
-      heroProgressText: document.getElementById('heroProgressText'),
-      heroStreak: document.getElementById('heroStreak'),
-      statTasks: document.getElementById('statTasks'),
-      statWater: document.getElementById('statWater'),
-      statPages: document.getElementById('statPages'),
-      todayBadge: document.getElementById('todayBadge'),
-      taskList: document.getElementById('taskList'),
-      roadmapBadge: document.getElementById('roadmapBadge'),
-      roadmapGrid: document.getElementById('roadmapGrid'),
-      journalInput: document.getElementById('journalInput'),
-      journalDateLabel: document.getElementById('journalDateLabel'),
-      logList: document.getElementById('logList'),
-      profilePercent: document.getElementById('profilePercent'),
-      profileMeta: document.getElementById('profileMeta'),
-      startDateInput: document.getElementById('startDateInput'),
-      saveSettings: document.getElementById('saveSettings'),
-      resetAll: document.getElementById('resetAll'),
-      saveJournal: document.getElementById('saveJournal'),
-      clearJournal: document.getElementById('clearJournal'),
-      openLogModal: document.getElementById('openLogModal'),
-      openLogModal2: document.getElementById('openLogModal2'),
-      modalBackdrop: document.getElementById('modalBackdrop'),
-      closeModal: document.getElementById('closeModal'),
-      cancelLog: document.getElementById('cancelLog'),
-      saveLog: document.getElementById('saveLog'),
-      logType: document.getElementById('logType'),
-      logDate: document.getElementById('logDate'),
-      logTitle: document.getElementById('logTitle'),
-      logDetails: document.getElementById('logDetails'),
-      jumpToday: document.getElementById('jumpToday'),
-      dayModalBackdrop: document.getElementById('dayModalBackdrop'),
-      closeDayModal: document.getElementById('closeDayModal'),
-      dayModalTitle: document.getElementById('dayModalTitle'),
-      dayModalStatus: document.getElementById('dayModalStatus'),
-      dayModalBadge: document.getElementById('dayModalBadge'),
-      dayModalLogs: document.getElementById('dayModalLogs')
-    };
-
-    function applyTheme() {
-      document.body.classList.toggle('light', state.settings.theme === 'light');
-      els.themeSelect.value = state.settings.theme;
-    }
-
-    function renderHome() {
-      const key = todayKey();
-      const day = ensureDay(key);
-      const dayNum = currentDayNumber();
-      const completed = completedDaysCount();
-      const percent = Math.round((completed / 75) * 100);
-
-      els.heroDay.textContent = dayNum;
-      els.heroBadge.textContent = `${percent}%`;
-      els.heroProgress.style.width = `${percent}%`;
-      els.heroProgressText.textContent = `${completed} of 75 days complete`;
-      els.heroStreak.textContent = `${currentStreak()} day streak`;
-      els.statTasks.textContent = `${completionCount(day)}/6`;
-      els.statWater.textContent = `${day.waterLiters.toFixed(day.waterLiters % 1 ? 1 : 0)}L`;
-      els.statPages.textContent = day.pagesRead;
-      els.todayBadge.textContent = statusLabel(key);
-
-      els.taskList.innerHTML = '';
-      TASKS.forEach(task => {
-        const done = !!day.tasks[task.id];
-        const item = document.createElement('div');
-        item.className = `task-item ${done ? 'done' : ''}`;
-
-        let rightText = '';
-        if (task.id === 'water') rightText = `${day.waterLiters.toFixed(day.waterLiters % 1 ? 1 : 0)}L`;
-        else if (task.id === 'reading') rightText = `${day.pagesRead}p`;
-        else rightText = done ? 'Done' : 'Tap';
-
-        item.innerHTML = `
-          <div class="task-main">
-            <button class="check" data-task-id="${task.id}">✓</button>
-            <div>
-              <div class="task-name">${task.name}</div>
-              <div class="task-sub">${task.sub}</div>
-            </div>
-          </div>
-          <div class="score ${done ? 'good' : ''}">${rightText}</div>
-        `;
-
-        item.querySelector('.check').addEventListener('click', () => toggleTask(task.id));
-        item.addEventListener('click', (e) => {
-          if (e.target.closest('.check')) return;
-          toggleTask(task.id);
-        });
-        els.taskList.appendChild(item);
+    function resizeImage(file, maxWidth = 1200, quality = 0.82) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const img = new Image();
+          img.onload = () => {
+            const scale = Math.min(1, maxWidth / img.width);
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.round(img.width * scale);
+            canvas.height = Math.round(img.height * scale);
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            resolve(canvas.toDataURL('image/jpeg', quality));
+          };
+          img.onerror = reject;
+          img.src = reader.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
       });
     }
 
-    function renderRoadmap() {
-      const completed = completedDaysCount();
-      els.roadmapBadge.textContent = `${completed}/75`;
-      els.roadmapGrid.innerHTML = '';
-      for (let i = 0; i < 75; i++) {
-        const d = parseDateKey(state.settings.startDate);
-        d.setDate(d.getDate() + i);
-        const key = keyForDate(d);
-        const cell = document.createElement('button');
-        let cls = 'day-cell';
-        if (key === todayKey()) cls += ' current';
-        if (isDayComplete(key)) cls += ' complete';
-        else if (isPast(key)) cls += ' missed';
-        else if (daysBetween(todayKey(), key) < 0) cls += ' empty';
-        cell.className = cls;
-        const hasLogs = ensureDay(key).logs.length > 0 || ensureDay(key).journal;
-        cell.innerHTML = `<span>${i + 1}</span>${hasLogs ? '<span class="day-dot"></span>' : ''}`;
-        cell.addEventListener('click', () => openDayModal(key, i + 1));
-        els.roadmapGrid.appendChild(cell);
+    const els = {
+      body: document.body,
+      progressRing: document.getElementById('progressRing'),
+      currentDay: document.getElementById('currentDay'),
+      completionPercent: document.getElementById('completionPercent'),
+      statusPill: document.getElementById('statusPill'),
+      todayDone: document.getElementById('todayDone'),
+      todayState: document.getElementById('todayState'),
+      perfectStreak: document.getElementById('perfectStreak'),
+      perfectDaysValue: document.getElementById('perfectDaysValue'),
+      tasksLeftValue: document.getElementById('tasksLeftValue'),
+      photoCountValue: document.getElementById('photoCountValue'),
+      taskList: document.getElementById('taskList'),
+      homeFocusTitle: document.getElementById('homeFocusTitle'),
+      homeFocusText: document.getElementById('homeFocusText'),
+      focusDayPill: document.getElementById('focusDayPill'),
+      homePhotoPreview: document.getElementById('homePhotoPreview'),
+      challengeMeter: document.getElementById('challengeMeter'),
+      daysCompleteScore: document.getElementById('daysCompleteScore'),
+      roadmapGrid: document.getElementById('roadmapGrid'),
+      roadmapHelpText: document.getElementById('roadmapHelpText'),
+      toggleRoadmapViewBtn: document.getElementById('toggleRoadmapViewBtn'),
+      photoInput: document.getElementById('photoInput'),
+      photoGrid: document.getElementById('photoGrid'),
+      photoVaultCount: document.getElementById('photoVaultCount'),
+      recordList: document.getElementById('recordList'),
+      journalDateInput: document.getElementById('journalDateInput'),
+      journalInput: document.getElementById('journalInput'),
+      weightInput: document.getElementById('weightInput'),
+      moodInput: document.getElementById('moodInput'),
+      journalList: document.getElementById('journalList'),
+      startDateInput: document.getElementById('startDateInput'),
+      themeSwitch: document.getElementById('themeSwitch'),
+      roadmapSwitch: document.getElementById('roadmapSwitch'),
+      themeNamePill: document.getElementById('themeNamePill'),
+      summaryDay: document.getElementById('summaryDay'),
+      summaryPerfect: document.getElementById('summaryPerfect'),
+      summaryEntries: document.getElementById('summaryEntries'),
+      dayModalBackdrop: document.getElementById('dayModalBackdrop'),
+      dayModalTitle: document.getElementById('dayModalTitle'),
+      modalTasksDone: document.getElementById('modalTasksDone'),
+      modalStatus: document.getElementById('modalStatus'),
+      modalWeight: document.getElementById('modalWeight'),
+      modalTaskList: document.getElementById('modalTaskList'),
+      modalJournal: document.getElementById('modalJournal'),
+      modalPhoto: document.getElementById('modalPhoto')
+    };
+
+    function applyTheme() {
+      document.body.classList.toggle('light', state.theme === 'light');
+      els.themeSwitch.classList.toggle('on', state.theme === 'light');
+      els.themeNamePill.textContent = state.theme === 'light' ? 'Light' : 'Dark';
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', state.theme === 'light' ? '#eef2f9' : '#07090e');
+    }
+
+    function renderHome() {
+      const today = getDay();
+      const completed = completedCount();
+      const dayNum = currentChallengeDay();
+      const percent = Math.round((dayNum / 75) * 100);
+      const angle = Math.round((dayNum / 75) * 360);
+      const totalPerfect = totalCompletedDays();
+      const focus = focusCopy(completed);
+
+      els.currentDay.textContent = dayNum;
+      els.completionPercent.textContent = `${percent}%`;
+      els.todayDone.textContent = `${completed} / 6`;
+      els.perfectStreak.textContent = perfectStreak();
+      els.perfectDaysValue.textContent = totalPerfect;
+      els.tasksLeftValue.textContent = 6 - completed;
+      els.photoCountValue.textContent = totalPhotoCount();
+      els.progressRing.style.background = `conic-gradient(var(--accent) 0deg, var(--accent-3) ${angle}deg, rgba(255,255,255,0.08) ${angle}deg 360deg)`;
+      els.homeFocusTitle.textContent = focus[0];
+      els.homeFocusText.textContent = focus[1];
+      els.focusDayPill.textContent = `Day ${dayNum}`;
+
+      if (completed === 6) {
+        els.statusPill.textContent = 'Perfect day';
+        els.todayState.textContent = 'Everything locked in';
+      } else if (completed >= 3) {
+        els.statusPill.textContent = 'Building';
+        els.todayState.textContent = 'Momentum is in motion';
+      } else {
+        els.statusPill.textContent = 'In progress';
+        els.todayState.textContent = 'Start with the next task';
+      }
+
+      els.taskList.innerHTML = '';
+      TASKS.forEach(task => {
+        const item = document.createElement('div');
+        item.className = `task ${today.tasks[task.id] ? 'done' : ''}`;
+        item.innerHTML = `
+          <div class="check">✓</div>
+          <div class="task-main">
+            <div class="task-name">${task.name}</div>
+            <div class="task-sub">${task.desc}</div>
+          </div>
+          <div class="tag">${today.tasks[task.id] ? 'Done' : 'Open'}</div>`;
+        item.onclick = () => {
+          today.tasks[task.id] = !today.tasks[task.id];
+          feedPush('task', `${task.name} ${today.tasks[task.id] ? 'completed' : 'unchecked'}`);
+          saveState();
+          render();
+        };
+        els.taskList.appendChild(item);
+      });
+
+      const latest = latestPhotoKey();
+      if (!latest) {
+        els.homePhotoPreview.className = 'empty';
+        els.homePhotoPreview.textContent = 'No progress photo yet.';
+      } else {
+        const src = state.days[latest].photo;
+        els.homePhotoPreview.className = 'photo-card';
+        els.homePhotoPreview.innerHTML = `<img src="${src}" alt="Progress photo" /><div class="meta"><strong>${prettyDate(latest)}</strong><div class="small">Latest saved photo</div></div>`;
       }
     }
 
-    function renderJournal() {
-      const key = todayKey();
-      const day = ensureDay(key);
+    function renderRoadmap() {
+      const completeDays = totalCompletedDays();
+      const expanded = state.roadmapExpanded;
+      els.daysCompleteScore.textContent = completeDays;
+      els.challengeMeter.style.width = `${Math.round((completeDays / 75) * 100)}%`;
+      els.roadmapGrid.className = `roadmap ${expanded ? 'expanded' : 'collapsed'}`;
+      els.roadmapHelpText.textContent = expanded ? 'Expanded grid view' : 'One-row compact view';
+      els.toggleRoadmapViewBtn.textContent = expanded ? 'Collapse' : 'Expand';
+      els.roadmapGrid.innerHTML = '';
+
+      for (let i = 0; i < 75; i++) {
+        const d = new Date(state.startDate + 'T00:00:00');
+        d.setDate(d.getDate() + i);
+        const key = formatDate(d);
+        const status = dayStatus(key);
+        const btn = document.createElement('button');
+        btn.className = 'road-day';
+        if (status === 'done') btn.classList.add('done');
+        if (status === 'missed') btn.classList.add('missed');
+        if (status === 'partial') btn.classList.add('partial');
+        if (status === 'future') btn.classList.add('future');
+        if (key === todayKey()) btn.classList.add('today');
+        btn.innerHTML = `<span>${i + 1}</span>${(completedCount(key) > 0 || getDay(key).journal || getDay(key).photo) ? '<span class="dot"></span>' : ''}`;
+        btn.onclick = () => openDayModal(key, i + 1);
+        els.roadmapGrid.appendChild(btn);
+      }
+    }
+
+    function renderProgress() {
+      const keys = Object.keys(state.days).filter(k => state.days[k].photo).sort((a,b) => b.localeCompare(a));
+      els.photoVaultCount.textContent = `${keys.length} saved`;
+      els.photoGrid.innerHTML = '';
+      if (!keys.length) {
+        els.photoGrid.innerHTML = '<div class="empty" style="grid-column:1 / -1;">No progress photos yet. Use “Take progress pic” on your phone.</div>';
+      } else {
+        keys.slice(0, 8).forEach(key => {
+          const card = document.createElement('div');
+          card.className = 'photo-card';
+          card.innerHTML = `<img src="${state.days[key].photo}" alt="Progress photo ${key}" /><div class="meta"><strong>${prettyDate(key)}</strong><div class="small">Saved to day ${daysDiff(state.startDate, key) + 1}</div></div>`;
+          card.onclick = () => openDayModal(key, daysDiff(state.startDate, key) + 1);
+          els.photoGrid.appendChild(card);
+        });
+      }
+
+      els.recordList.innerHTML = '';
+      if (!state.feed.length) {
+        els.recordList.innerHTML = '<div class="empty">No records yet.</div>';
+      } else {
+        state.feed.slice(0, 16).forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'record-item';
+          const positive = item.type !== 'reset';
+          div.innerHTML = `
+            <div class="top">
+              <strong>${item.text}</strong>
+              <div class="score ${positive ? 'pos' : 'neg'}">${item.time}</div>
+            </div>
+            <div class="small">${prettyDate(item.date)}</div>`;
+          els.recordList.appendChild(div);
+        });
+      }
+    }
+
+    function loadJournalEditor(dateKey) {
+      state.selectedJournalDate = dateKey;
+      ensureDay(dateKey);
+      const day = getDay(dateKey);
+      els.journalDateInput.value = dateKey;
       els.journalInput.value = day.journal || '';
-      els.journalDateLabel.textContent = parseDateKey(key).toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
-      els.logList.innerHTML = '';
-      if (!day.logs.length) {
-        els.logList.innerHTML = '<div class="empty">No checkpoints saved yet today.</div>';
+      els.weightInput.value = day.weight || '';
+      els.moodInput.value = day.mood || 'Locked in';
+      saveState();
+    }
+
+    function renderJournal() {
+      if (!state.selectedJournalDate) state.selectedJournalDate = todayKey();
+      loadJournalEditor(state.selectedJournalDate);
+
+      const keys = Object.keys(state.days)
+        .filter(k => state.days[k].journal || state.days[k].weight || state.days[k].photo)
+        .sort((a,b) => b.localeCompare(a))
+        .slice(0, 8);
+
+      els.journalList.innerHTML = '';
+      if (!keys.length) {
+        els.journalList.innerHTML = '<div class="empty">No saved entries yet.</div>';
         return;
       }
-      day.logs.slice().reverse().forEach(log => {
-        const div = document.createElement('div');
-        div.className = 'log-item';
-        div.innerHTML = `
-          <div class="log-main">
-            <div>
-              <div class="log-name">${log.title}</div>
-              <div class="log-sub">${log.type} • ${log.details || 'No extra details'}</div>
-            </div>
+
+      keys.forEach(key => {
+        const entry = state.days[key];
+        const item = document.createElement('div');
+        item.className = 'journal-item';
+        item.innerHTML = `
+          <div class="top">
+            <strong>${prettyDate(key)}</strong>
+            <div class="tag">${entry.mood || '—'}</div>
           </div>
-          <div class="score">${log.type}</div>
-        `;
-        els.logList.appendChild(div);
+          <div class="small" style="margin-bottom:8px;">${entry.weight ? 'Weight: ' + entry.weight : 'No weight logged'}${entry.photo ? ' • Photo saved' : ''}</div>
+          <div style="line-height:1.55; color: var(--text); font-size:13px;">${entry.journal || 'No journal text saved.'}</div>`;
+        item.onclick = () => {
+          document.querySelector('[data-target="screen-journal"]').click();
+          loadJournalEditor(key);
+          renderJournal();
+        };
+        els.journalList.appendChild(item);
       });
     }
 
     function renderProfile() {
-      const completed = completedDaysCount();
-      const percent = Math.round((completed / 75) * 100);
-      els.profilePercent.textContent = `${percent}%`;
-      els.profileMeta.textContent = `Day ${currentDayNumber()} • ${completed} completed days`;
-      els.startDateInput.value = state.settings.startDate;
+      els.startDateInput.value = state.startDate;
+      els.roadmapSwitch.classList.toggle('on', state.roadmapExpanded);
+      els.summaryDay.textContent = currentChallengeDay();
+      els.summaryPerfect.textContent = totalCompletedDays();
+      els.summaryEntries.textContent = totalJournalCount();
+    }
+
+    function openDayModal(key, dayNumber) {
+      const day = getDay(key);
+      const done = completedCount(key);
+      const status = dayStatus(key);
+      els.dayModalTitle.textContent = `Day ${dayNumber} • ${prettyDate(key)}`;
+      els.modalTasksDone.textContent = `${done}/6`;
+      els.modalStatus.textContent = status === 'done' ? 'Done' : status === 'missed' ? 'Missed' : status === 'future' ? 'Future' : status === 'partial' ? 'Partial' : 'Current';
+      els.modalWeight.textContent = day.weight || '—';
+      els.modalTaskList.innerHTML = '';
+      TASKS.forEach(task => {
+        const item = document.createElement('div');
+        item.className = `task ${day.tasks[task.id] ? 'done' : ''}`;
+        item.style.cursor = 'default';
+        item.innerHTML = `
+          <div class="check">✓</div>
+          <div class="task-main">
+            <div class="task-name">${task.name}</div>
+            <div class="task-sub">${task.desc}</div>
+          </div>
+          <div class="tag">${day.tasks[task.id] ? 'Done' : 'Open'}</div>`;
+        els.modalTaskList.appendChild(item);
+      });
+      if (day.journal) {
+        els.modalJournal.className = '';
+        els.modalJournal.textContent = day.journal;
+      } else {
+        els.modalJournal.className = 'empty';
+        els.modalJournal.textContent = 'No journal saved for this day.';
+      }
+      if (day.photo) {
+        els.modalPhoto.className = 'photo-card';
+        els.modalPhoto.innerHTML = `<img src="${day.photo}" alt="Day progress photo"><div class="meta"><strong>${prettyDate(key)}</strong><div class="small">Saved photo</div></div>`;
+      } else {
+        els.modalPhoto.className = 'empty';
+        els.modalPhoto.textContent = 'No progress photo for this day.';
+      }
+      els.dayModalBackdrop.classList.add('show');
+    }
+
+    function saveJournal() {
+      const key = els.journalDateInput.value || todayKey();
+      ensureDay(key);
+      const day = getDay(key);
+      day.journal = els.journalInput.value.trim();
+      day.weight = els.weightInput.value.trim();
+      day.mood = els.moodInput.value;
+      feedPush('journal', day.journal ? `Journal saved for ${prettyDate(key)}` : `Journal cleared for ${prettyDate(key)}`, key);
+      state.selectedJournalDate = key;
+      saveState();
+      render();
     }
 
     function render() {
       applyTheme();
       renderHome();
       renderRoadmap();
+      renderProgress();
       renderJournal();
       renderProfile();
-      saveState();
     }
 
-    function toggleTask(id) {
-      const day = ensureDay(todayKey());
-      if (id === 'water') {
-        day.tasks.water = !day.tasks.water;
-        if (day.tasks.water && day.waterLiters < 3.8) day.waterLiters = 3.8;
-      } else if (id === 'reading') {
-        day.tasks.reading = !day.tasks.reading;
-        if (day.tasks.reading && day.pagesRead < 10) day.pagesRead = 10;
-      } else {
-        day.tasks[id] = !day.tasks[id];
-      }
-      render();
-    }
-
-    function addWater(amount) {
-      const day = ensureDay(todayKey());
-      day.waterLiters = Math.min(6, Math.round((day.waterLiters + amount) * 10) / 10);
-      day.tasks.water = day.waterLiters >= 3.8;
-      render();
-    }
-
-    function addPages(amount) {
-      const day = ensureDay(todayKey());
-      day.pagesRead += amount;
-      day.tasks.reading = day.pagesRead >= 10;
-      render();
-    }
-
-    function openModal() {
-      els.logDate.value = todayKey();
-      els.logTitle.value = '';
-      els.logDetails.value = '';
-      els.logType.value = 'Win';
-      els.modalBackdrop.classList.add('show');
-    }
-
-    function closeModal() {
-      els.modalBackdrop.classList.remove('show');
-    }
-
-    function saveLog() {
-      const date = els.logDate.value || todayKey();
-      const title = els.logTitle.value.trim();
-      if (!title) {
-        alert('Add a title first.');
-        return;
-      }
-      const day = ensureDay(date);
-      day.logs.push({
-        id: Date.now().toString(36),
-        type: els.logType.value,
-        title,
-        details: els.logDetails.value.trim()
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.target).classList.add('active');
       });
-      closeModal();
-      render();
-      if (date === todayKey()) showScreen('screen-journal');
-    }
+    });
 
-    function openDayModal(key, num) {
-      const day = ensureDay(key);
-      els.dayModalTitle.textContent = `Day ${num}`;
-      els.dayModalStatus.textContent = `${statusLabel(key)} • ${parseDateKey(key).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}`;
-      els.dayModalBadge.textContent = `${completionCount(day)}/6`;
-      els.dayModalLogs.innerHTML = '';
-      if (!day.logs.length && !day.journal) {
-        els.dayModalLogs.innerHTML = '<div class="empty">No saved notes for this day.</div>';
-      } else {
-        if (day.journal) {
-          const journalCard = document.createElement('div');
-          journalCard.className = 'log-item';
-          journalCard.innerHTML = `<div class="log-main"><div><div class="log-name">Journal</div><div class="log-sub">${day.journal}</div></div></div><div class="score">Text</div>`;
-          els.dayModalLogs.appendChild(journalCard);
-        }
-        day.logs.forEach(log => {
-          const div = document.createElement('div');
-          div.className = 'log-item';
-          div.innerHTML = `<div class="log-main"><div><div class="log-name">${log.title}</div><div class="log-sub">${log.type} • ${log.details || 'No extra details'}</div></div></div><div class="score">${log.type}</div>`;
-          els.dayModalLogs.appendChild(div);
-        });
+    document.getElementById('themeToggleTop').onclick = () => {
+      state.theme = state.theme === 'dark' ? 'light' : 'dark';
+      saveState(); render();
+    };
+    document.getElementById('themeSwitch').onclick = () => {
+      state.theme = state.theme === 'dark' ? 'light' : 'dark';
+      saveState(); render();
+    };
+    document.getElementById('completeAllBtn').onclick = () => {
+      const day = getDay();
+      TASKS.forEach(t => day.tasks[t.id] = true);
+      feedPush('task', 'All daily tasks completed');
+      saveState(); render();
+    };
+    document.getElementById('resetTodayBtn').onclick = () => {
+      const day = getDay();
+      TASKS.forEach(t => day.tasks[t.id] = false);
+      day.photo = '';
+      feedPush('reset', 'Today checklist reset');
+      saveState(); render();
+    };
+    document.getElementById('toggleRoadmapViewBtn').onclick = () => {
+      state.roadmapExpanded = !state.roadmapExpanded;
+      saveState(); renderRoadmap(); renderProfile();
+    };
+    document.getElementById('roadmapSwitch').onclick = () => {
+      state.roadmapExpanded = !state.roadmapExpanded;
+      saveState(); renderRoadmap(); renderProfile();
+    };
+    document.getElementById('jumpTodayBtn').onclick = () => openDayModal(todayKey(), currentChallengeDay());
+    document.getElementById('openProgressTabBtn').onclick = () => document.querySelector('[data-target="screen-progress"]').click();
+
+    document.getElementById('saveJournalBtn').onclick = saveJournal;
+    document.getElementById('saveJournalBtnTop').onclick = saveJournal;
+    document.getElementById('clearJournalBtn').onclick = () => {
+      els.journalInput.value = '';
+      els.weightInput.value = '';
+      saveJournal();
+    };
+    document.getElementById('journalDateInput').addEventListener('change', e => {
+      const key = e.target.value || todayKey();
+      loadJournalEditor(key);
+      renderJournal();
+    });
+
+    document.getElementById('startDateInput').addEventListener('change', e => {
+      if (!e.target.value) return;
+      state.startDate = e.target.value;
+      feedPush('setup', 'Challenge start date updated');
+      saveState(); render();
+    });
+    document.getElementById('resetAllBtn').onclick = () => {
+      if (!confirm('Reset all local app data?')) return;
+      state = buildDefaultState();
+      saveState(); render();
+    };
+
+    document.getElementById('clearPhotosBtn').onclick = () => {
+      if (!confirm('Clear all saved progress photos?')) return;
+      Object.keys(state.days).forEach(key => { state.days[key].photo = ''; state.days[key].tasks.photo = false; });
+      feedPush('reset', 'All progress photos cleared');
+      saveState(); render();
+    };
+
+    els.photoInput.addEventListener('change', async e => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+      try {
+        const dataUrl = await resizeImage(file);
+        const day = getDay();
+        day.photo = dataUrl;
+        day.tasks.photo = true;
+        feedPush('photo', 'Progress photo saved');
+        saveState();
+        render();
+        document.querySelector('[data-target="screen-progress"]').click();
+      } catch (err) {
+        alert('Could not process that image. Try another photo.');
       }
-      els.dayModalBackdrop.classList.add('show');
-    }
+      e.target.value = '';
+    });
 
-    function closeDayModal() {
-      els.dayModalBackdrop.classList.remove('show');
-    }
-
-    function showScreen(id) {
-      els.screens.forEach(s => s.classList.toggle('active', s.id === id));
-      els.navBtns.forEach(btn => btn.classList.toggle('active', btn.dataset.target === id));
-      window.scrollTo({ top: 0, behavior: 'instant' });
-    }
-
-    els.navBtns.forEach(btn => btn.addEventListener('click', () => showScreen(btn.dataset.target)));
-    els.themeToggle.addEventListener('click', () => {
-      state.settings.theme = state.settings.theme === 'dark' ? 'light' : 'dark';
-      render();
-    });
-    els.themeSelect.addEventListener('change', () => {
-      state.settings.theme = els.themeSelect.value;
-      render();
-    });
-    els.saveSettings.addEventListener('click', () => {
-      state.settings.startDate = els.startDateInput.value || todayKey();
-      state.settings.theme = els.themeSelect.value;
-      render();
-    });
-    els.resetAll.addEventListener('click', () => {
-      if (!confirm('Reset all local data for this app?')) return;
-      state = defaultState();
-      render();
-    });
-    els.saveJournal.addEventListener('click', () => {
-      ensureDay(todayKey()).journal = els.journalInput.value.trim();
-      render();
-    });
-    els.clearJournal.addEventListener('click', () => {
-      ensureDay(todayKey()).journal = '';
-      render();
-    });
-    els.openLogModal.addEventListener('click', openModal);
-    els.openLogModal2.addEventListener('click', openModal);
-    els.closeModal.addEventListener('click', closeModal);
-    els.cancelLog.addEventListener('click', closeModal);
-    els.saveLog.addEventListener('click', saveLog);
-    els.modalBackdrop.addEventListener('click', e => { if (e.target === els.modalBackdrop) closeModal(); });
-    els.closeDayModal.addEventListener('click', closeDayModal);
-    els.dayModalBackdrop.addEventListener('click', e => { if (e.target === els.dayModalBackdrop) closeDayModal(); });
-    els.jumpToday.addEventListener('click', () => openDayModal(todayKey(), currentDayNumber()));
-
-    document.querySelectorAll('[data-add-water]').forEach(btn => {
-      btn.addEventListener('click', () => addWater(Number(btn.dataset.addWater)));
-    });
-    document.querySelectorAll('[data-add-pages]').forEach(btn => {
-      btn.addEventListener('click', () => addPages(Number(btn.dataset.addPages)));
+    document.getElementById('closeDayModal').onclick = () => els.dayModalBackdrop.classList.remove('show');
+    els.dayModalBackdrop.addEventListener('click', e => {
+      if (e.target === els.dayModalBackdrop) els.dayModalBackdrop.classList.remove('show');
     });
 
     render();
